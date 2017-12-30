@@ -1,3 +1,8 @@
+img.thumbnail {
+	max-height: 150px;
+	max-width: 200px;
+}
+
 thead.table-header>tr>th {
 	background-color: #54698d;
 	color: #ffffff;

@@ -1,4 +1,4 @@
-var acumen = (function Navigator(acumen) {
+window.acumen = (function Navigator(acumen) {
 
 	var navigateToObjectHome = function(objectApiName) {
 		var homeEvent = $A.get("e.force:navigateToObjectHome");
@@ -32,6 +32,5 @@ var acumen = (function Navigator(acumen) {
 		navigateToURL: navigateToURL,
 	};
 
-	console.log("Navigator loaded.");
 	return acumen;
-})(acumen || {});
+})(window.acumen || {});

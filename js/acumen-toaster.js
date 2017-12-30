@@ -1,12 +1,12 @@
-var acumen = (function Toaster(acumen) {
+window.acumen = (function Toaster(acumen) {
 
-	var fireToast = function(title, message, key, type) {
+	var fireToast = function(title, message, iconName, styleType) {
 		var toast = $A.get("e.force:showToast");
 		toast.setParams({
 			title: title,
 			message: message,
-			key: key,
-			type: type,
+			key: iconName,
+			type: styleType,
 		});
 		toast.fire();
 	};
@@ -34,6 +34,5 @@ var acumen = (function Toaster(acumen) {
 		warning: warning,
 	};
 
-	console.log("Toaster loaded.");
 	return acumen;
-})(acumen || {});
+})(window.acumen || {});
