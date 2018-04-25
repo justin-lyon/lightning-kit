@@ -1,31 +1,50 @@
 window.acumen = (function Action(acumen) {
 
-	var call = function(component, event, helper, action){
+	var logErrors = function(response) {
+		var errors = response.getError();
+		if(errors) {
+			errors.forEach(function(error) {
+				console.error("Error with message: ", error.message);
+			});
+		} else {
+			console.error("Unknown Error.");
+		}
+	};
+
+	var onSuccess = function(action, response) {
+		if(action.onSuccess && typeof action.onSuccess === "function") {
+			action.onSuccess(response);
+		}
+	};
+
+	var onError = function(action, response) {
+		if(action.onError && typeof action.onError === "function") {
+			action.onError(response);
+		}
+		logErrors(response);
+	};
+
+	var evaluateCallback = function(action, response) {
+		var state = response.getState();
+			if (state === "SUCCESS") {
+				onSuccess(action, response);
+
+			} else if (state === "ERROR") {
+				onError(action, response);
+			}
+	};
+
+	var call = function(component, action){
 		var a = component.get(action.name);
-		if(typeof action.params !== 'undefined') {
+
+		if(action.params && typeof action.params === "object") {
 			a.setParams(action.params);
 		}
+
 		a.setCallback(this, function(response) {
-			var state = response.getState();
-			if (state === "SUCCESS") {
-				if(typeof action.onSuccess !== 'undefined'){
-					action.onSuccess(response);
-				}
-			}
-			else if (state === "ERROR") {
-				if(typeof action.onError !== 'undefined'){
-					action.onError(response);
-    			}
-				var errors = response.getError();
-				if (errors) {
-					if (errors[0] && errors[0].message) {
-						console.log("Error message: " +	errors[0].message);
-					}
-				} else {
-					console.log("Unknown error");
-				}
-			}
+			evaluateCallback(action, response);
 		});
+
 		$A.enqueueAction(a);
 	};
 

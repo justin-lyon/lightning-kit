@@ -123,18 +123,28 @@
 	createContact : function(cmp, event, helper) {
 
 		var action = {};
+		// AuraService method reference
 		action.name = "c.saveNewContact";
+
+		// Optional
 		action.params = {
 			contact: cmp.get("v.contact")
 		};
-		action.onSuccess = function(response){
+
+		// Optional
+		// On Callback Success
+		action.onSuccess = function(response) {
 			//do something here on success
 		};
-		//optional
-		action.onError = function(response){
+
+		// Optional
+		// On Callback Error
+		action.onError = function(response) {
 			//do something here on error
 		};
-		acumen.action.call(component, event, helper, action);
+
+		// Invoke
+		acumen.action.call(component, action);
 	}
 })
 ```
