@@ -1,6 +1,6 @@
 # README
 
-> A generic Static Resource Dev Kit for Lightning Experience development.
+> A generic Static Resource Dev Kit for Lightning Experience development. Salesforce Lightning and Lockerservice requires that Static Resources use the IIFE Pattern and explicitly assign our IIFE to the `window` object. For more information on the IIFE Pattern see [Mozilla MDN](https://developer.mozilla.org/en-US/docs/Glossary/IIFE).
 
 ---
 ### Includes
@@ -30,7 +30,7 @@
 		$Resource.lightningKit + '/lightning-kit/js/acumen-navigator.js',
 		$Resource.lightningKit + '/lightning-kit/js/acumen-action.js',
 		$Resource.lightningKit + '/lightning-kit/js/acumen-toaster.js')}"
-	afterScriptsLoaded="{!c.scriptsLoaded}"/>
+	afterScriptsLoaded="{!c.afterScriptsLoaded}"/>
 ```
 
 #### Debouncer Usage
@@ -41,36 +41,38 @@
 ...
 <ltng:require scripts="{!join(',',
 		$Resource.LightningKit + '/lightning-kit/js/acumen-debouncer.js')}"
-	afterScriptsLoaded="{!c.scriptsLoaded}" />
-<aura:attribute name="acumenDebouncer" type="Object" description="acumen-debouncer instance" />
+	afterScriptsLoaded="{!c.afterScriptsLoaded}" />
+<aura:attribute name="search" type="Object" description="debounced search function" />
 ...
 ```
 
 ```javascript
 ({
 	onKeyUp : function(cmp, event, helper) {
-		// Call the new debounced search prop (from after scripts loaded) on acumen.debouncer
-		var debouncer = cmp.get("v.acumenDebouncer");
-		debouncer.search();
+		// Call the new debounced search (from after scripts loaded)
+		var search = cmp.get("v.search");
+		search();
 	},
 
-	scriptsLoaded: function(cmp, event, helper) {
+	afterScriptsLoaded: function(cmp, event, helper) {
 		/*
-			After scripts loaded, initialize a debouncer on the search function.
-			Assigned to a new prop on acumen.debouncer
+			After scripts loaded, wrap the logic you wish to delay in debouncer.
+			`acumen.debouncer.debounce()` returns a function that we assign to `search`.
+
 			$A.getCallback registers the setTimeout to the framework to observe the
 			the async callback within the helper.requestContacts function.
 		*/
 		var debouncer = acumen.debouncer;
 
-		debouncer.search = debouncer.debounce($A.getCallback(function() {
+		var search = debouncer.debounce($A.getCallback(function() {
 			var searchText = cmp.get("v.searchText");
 			if(searchText.length > 2) {
 				helper.requestRecords(cmp);
 			}
-		}), 500);
+		}), 500); // Your desired delay in milliseconds.
 
-		cmp.set("v.acumenDebouncer", debouncer);
+		// Assign our debounced search function to a component attribute for later use.
+		cmp.set("v.search", search);
 	}
 })
 ```
