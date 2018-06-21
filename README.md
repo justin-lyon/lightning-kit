@@ -79,6 +79,8 @@
 
 #### Navigator Usage
 
+> `acumen-navigator.js` abstracts the various force:navigate events.
+
 ```javascript
 ({
 	navigateToRecord : function(cmp, event, helper) {
@@ -90,6 +92,8 @@
 ```
 
 #### Toaster Usage
+
+> `acumen-toaster.js` abstracts the force:showToast event
 
 ```javascript
 ({
@@ -119,6 +123,8 @@
 ```
 
 #### Action Usage
+
+> `acumen-action.js` abstracts the framework boilerplate of enqueueing a server call.
 
 ```javascript
 ({
