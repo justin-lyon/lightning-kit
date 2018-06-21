@@ -13,7 +13,7 @@ window.acumen = (function Navigator(acumen) {
 		slideDevName = (slideDevName) ? slideDevName : "detail";
 		navEvent.setParams({
 			recordId: recordId,
-			slideDevName, slideDevName
+			slideDevName: slideDevName
 		});
 		navEvent.fire();
 	};
