@@ -1,4 +1,4 @@
-window.acumen = (function Navigator(acumen) {
+window.kit = (function Navigator(kit) {
 
 	var navigateToObjectHome = function(objectApiName) {
 		var homeEvent = $A.get("e.force:navigateToObjectHome");
@@ -26,11 +26,11 @@ window.acumen = (function Navigator(acumen) {
 		urlEvent.fire();
 	};
 
-	acumen.navigator = {
+	kit.navigator = {
 		navigateToObjectHome: navigateToObjectHome,
 		navigateToSObject: navigateToSObject,
 		navigateToURL: navigateToURL,
 	};
 
-	return acumen;
-})(window.acumen || {});
+	return kit;
+})(window.kit || {});

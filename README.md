@@ -5,14 +5,16 @@
 ---
 ### Includes
 
-* `js/acumen-debouncer.js`
+* `js/debouncer.js`
 	* A lightning compatible debouncer to delay actions.
-* `js/acumen-navigator.js`
+* `js/navigator.js`
 	* Helper functions to open links by SObject or URL through the `force:navigate` events.
-* `js/acumen-toaster.js`
+* `js/toaster.js`
 	* Helper functions to fire toasts from the `force:showToast` event.
-* `js/acumen-action.js`
+* `js/action.js`
 	* Helper functions to call method on Apex class.
+* `js/promisify.js`
+	* Helper functions to wrap Aura Actions in a Promise.
 * `css/master.css`
 	* CSS Starter Template for Lightning Development.
 
@@ -24,12 +26,12 @@
 ```html
 <ltng:require
 	styles="{!join(',',
-		$Resource.lightningKit + '/lightning-kit/css/master.css')}"
+		$Resource.lightningKit + '/css/master.css')}"
 	scripts="{!join(',',
-		$Resource.lightningKit + '/lightning-kit/js/acumen-debouncer.js',
-		$Resource.lightningKit + '/lightning-kit/js/acumen-navigator.js',
-		$Resource.lightningKit + '/lightning-kit/js/acumen-action.js',
-		$Resource.lightningKit + '/lightning-kit/js/acumen-toaster.js')}"
+		$Resource.lightningKit + '/js/debouncer.js',
+		$Resource.lightningKit + '/js/navigator.js',
+		$Resource.lightningKit + '/js/action.js',
+		$Resource.lightningKit + '/js/toaster.js')}"
 	afterScriptsLoaded="{!c.afterScriptsLoaded}"/>
 ```
 
@@ -40,7 +42,7 @@
 ```html
 ...
 <ltng:require scripts="{!join(',',
-		$Resource.LightningKit + '/lightning-kit/js/acumen-debouncer.js')}"
+		$Resource.LightningKit + '/js/debouncer.js')}"
 	afterScriptsLoaded="{!c.afterScriptsLoaded}" />
 <aura:attribute name="search" type="Object" description="debounced search function" />
 ...
@@ -57,12 +59,12 @@
 	afterScriptsLoaded: function(cmp, event, helper) {
 		/*
 			After scripts loaded, wrap the logic you wish to delay in debouncer.
-			`acumen.debouncer.debounce()` returns a function that we assign to `search`.
+			`kit.debouncer.debounce()` returns a function that we assign to `search`.
 
 			$A.getCallback registers the setTimeout to the framework to observe the
 			the async callback within the helper.requestContacts function.
 		*/
-		var debouncer = acumen.debouncer;
+		var debouncer = kit.debouncer;
 
 		var search = debouncer.debounce($A.getCallback(function() {
 			var searchText = cmp.get("v.searchText");
@@ -79,21 +81,17 @@
 
 #### Navigator Usage
 
-> `acumen-navigator.js` abstracts the various force:navigate events.
-
 ```javascript
 ({
 	navigateToRecord : function(cmp, event, helper) {
 
 		var recordId = cmp.get("v.recordId");
-		acumen.navigator.navigateToSObject(recordId);
+		kit.navigator.navigateToSObject(recordId);
 	}
 })
 ```
 
 #### Toaster Usage
-
-> `acumen-toaster.js` abstracts the force:showToast event
 
 ```javascript
 ({
@@ -110,10 +108,10 @@
 
 			if(state === "SUCCESS") {
 				// Send Success Toast
-				acumen.toaster.success("Saved", contact.FirstName + " " + contact.LastName);
+				kit.toaster.success("Saved", contact.FirstName + " " + contact.LastName);
 			} else {
 				// Send Error Toast
-				acumen.toaster.error("Error", "Could not save contact.");
+				kit.toaster.error("Error", "Could not save contact.");
 			}
 		});
 
@@ -123,8 +121,6 @@
 ```
 
 #### Action Usage
-
-> `acumen-action.js` abstracts the framework boilerplate of enqueueing a server call.
 
 ```javascript
 ({
@@ -152,7 +148,65 @@
 		};
 
 		// Invoke
-		acumen.action.call(component, action);
+		kit.action.call(component, action);
+	}
+})
+```
+
+#### Promisify Usage
+
+```javascript
+
+({
+	fetchAccounts: function(cmp, helper) {
+		// Create an Aura Action and Set Params
+		var action = cmp.get("c.getLimitedAccounts");
+		action.setParams({
+			limitter: 10
+		});
+
+		// kit.promisify returns your aura action wrapped in a promise.
+		kit.promisify(action)
+			.then(function(auraRes) {
+				// handle success
+				console.log("auraRes value", auraRes.getReturnValue());
+			})
+			.catch(function(auraRes) {
+				// handle failure
+				console.error("auraRes err", auraRes.getError());
+			});
+	}
+})
+```
+
+#### Promisify Usage (Closure)
+
+```javascript
+({
+	fetchAccounts: function(cmp, helper) {
+		var action = cmp.get("c.getLimitedAccounts");
+		action.setParams({
+			limitter: 10
+		});
+
+		kit.promisify(action)
+			.then(helper.onSuccess(cmp))
+			.catch(helper.onFailure(cmp));
+	},
+
+	onSuccess: function(cmp) {
+		return function(result) {
+			var accounts = result.getReturnValue();
+			cmp.set("v.accounts", accounts);
+		};
+	},
+
+	onFailure: function(cmp) {
+		return function(result) {
+			var errors = result.getError();
+			console.error("Error(s) while fetching accounts: ", errors);
+			cmp.set("v.accounts", []);
+		};
 	}
 })
 ```

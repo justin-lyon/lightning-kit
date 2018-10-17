@@ -1,4 +1,4 @@
-window.acumen = (function Toaster(acumen) {
+window.kit = (function Toaster(kit) {
 
 	var fireToast = function(title, message, iconName, styleType) {
 		var toast = $A.get("e.force:showToast");
@@ -27,12 +27,12 @@ window.acumen = (function Toaster(acumen) {
 		fireToast(title, message, "warning", "warning");
 	};
 
-	acumen.toaster = {
+	kit.toaster = {
 		error: error,
 		info: info,
 		success: success,
 		warning: warning,
 	};
 
-	return acumen;
-})(window.acumen || {});
+	return kit;
+})(window.kit || {});

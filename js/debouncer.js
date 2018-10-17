@@ -1,4 +1,4 @@
-window.acumen = (function Debouncer(acumen) {
+window.kit = (function Debouncer(kit) {
 
 	var debounce = function(func, delay) {
 		var inDebounce = undefined;
@@ -14,9 +14,9 @@ window.acumen = (function Debouncer(acumen) {
 		};
 	};
 
-	acumen.debouncer = {
+	kit.debouncer = {
 		debounce: debounce
 	};
 
-	return acumen;
-})(window.acumen || {});
+	return kit;
+})(window.kit || {});

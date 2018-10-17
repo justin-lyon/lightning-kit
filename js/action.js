@@ -1,4 +1,4 @@
-window.acumen = (function Action(acumen) {
+window.kit = (function Action(kit) {
 
 	var logErrors = function(response) {
 		var errors = response.getError();
@@ -48,9 +48,9 @@ window.acumen = (function Action(acumen) {
 		$A.enqueueAction(a);
 	};
 
-	acumen.action = {
+	kit.action = {
 		call: call
 	};
 
-	return acumen;
-})(window.acumen || {});
+	return kit;
+})(window.kit || {});
