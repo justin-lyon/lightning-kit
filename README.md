@@ -3,6 +3,15 @@
 > A generic Static Resource Dev Kit for Lightning Experience development. Salesforce Lightning and Lockerservice requires that Static Resources use the IIFE Pattern and explicitly assign our IIFE to the `window` object. For more information on the IIFE Pattern see [Mozilla MDN](https://developer.mozilla.org/en-US/docs/Glossary/IIFE).
 
 ---
+
+## Deploy to Salesforce
+
+Using the [githubsfdeploy app](https://github.com/afawcett/githubsfdeploy), add this code to your Salesfore Org.
+
+<a target="_blank" rel="noopener noreferrer" href="https://githubsfdeploy.herokuapp.com/app/githubdeploy/jlyon87/lightning-kit"><img src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/src/main/webapp/resources/img/deploy.png" alt="Button" style="max-width:100%;"></a>
+
+
+---
 ### Includes
 
 * `js/debouncer.js`
